@@ -1,28 +1,21 @@
 import Foundation
 import ZeroMQ
 
-// TODO , this unchecked is probably not awesome, but for get going, do it
 public class Message: @unchecked Sendable{
 
   var msg: zmq_msg_t
 
-// TODO, do I need that at all?
   public init() {
     msg = zmq_msg_t()
     zmq_msg_init(&msg)
   }
 
-  public init(zmq_msg: zmq_msg_t) {
-    self.msg = zmq_msg
+  deinit {
+      zmq_msg_close(&msg)
   }
 
-// TODO, do I need that at all?
-  init(size: Int) throws {
-    msg = zmq_msg_t()
-    let rc = zmq_msg_init_size(&msg, size)
-    if rc != 0 {
-      throw currentZmqError()
-    }
+  public init(zmq_msg: zmq_msg_t) {
+    self.msg = zmq_msg
   }
 
   public var data: UnsafeMutableRawPointer? {
